@@ -1,4 +1,6 @@
-﻿namespace GameCube.AmusementVision.LZ
+﻿using System.Collections.Generic;
+
+namespace GameCube.AmusementVision.LZ
 {
 	internal class LzssEncoder
 	{

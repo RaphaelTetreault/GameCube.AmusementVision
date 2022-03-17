@@ -1,7 +1,9 @@
 {
     "name": "GameCube.AmusementVision",
     "rootNamespace": "GameCube.AmusementVision",
-    "references": [],
+    "references": [
+        "GUID:1ec25e8a214ccbb48b100892bce825d3"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
