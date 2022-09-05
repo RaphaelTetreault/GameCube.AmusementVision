@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Manifold.Core\src\Manifold\Manifold.IO\Manifold.IO.csproj" />
+    <ProjectReference Include="..\..\..\Manifold.Core\src\Manifold.IO\Manifold.IO.csproj" />
     <ProjectReference Include="..\GameCube.AmusementVision\GameCube.AmusementVision.csproj" />
   </ItemGroup>
 
