@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Manifold.IO;
+﻿using Manifold.IO;
 
 namespace GameCube.AmusementVision.LZ
 {
@@ -57,12 +55,6 @@ namespace GameCube.AmusementVision.LZ
 
             // Write uncompressed data to output stream
             outputStream.Write(uncompressedData, 0, uncompressedData.Length);
-        }
-
-        [Obsolete]
-        public static void Unpack(Stream inputStream, Stream outputStream, GxGame game)
-        {
-            Unpack(inputStream, outputStream);
         }
 
         public static void Pack(Stream inputStream, Stream outputStream, GxGame game)
