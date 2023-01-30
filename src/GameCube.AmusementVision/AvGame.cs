@@ -7,7 +7,7 @@ namespace GameCube.AmusementVision
 	/// Some functions in this library require the game specification
 	/// in order to handle game-specific differences.
 	/// </summary>
-	public enum GxGame
+	public enum AvGame
 	{
         /// <summary>Super Monkey Ball 1 or 2</summary>
         [Description("SMB 1/2")]

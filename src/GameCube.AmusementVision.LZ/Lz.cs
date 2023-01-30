@@ -57,13 +57,13 @@ namespace GameCube.AmusementVision.LZ
             outputStream.Write(uncompressedData, 0, uncompressedData.Length);
         }
 
-        public static void Pack(Stream inputStream, Stream outputStream, GxGame game)
+        public static void Pack(Stream inputStream, Stream outputStream, AvGame game)
         {
             if (inputStream == null)
                 throw new ArgumentNullException("inputStream");
             if (outputStream == null)
                 throw new ArgumentNullException("outputStream");
-            if (!Enum.IsDefined(typeof(GxGame), game))
+            if (!Enum.IsDefined(typeof(AvGame), game))
                 throw new ArgumentOutOfRangeException("game");
 
             // Read the input data and compress with LZSS
@@ -76,16 +76,16 @@ namespace GameCube.AmusementVision.LZ
             int headerSizeField = compressedData.Length;
             switch (game)
             {
-                case GxGame.SuperMonkeyBall:
-                case GxGame.SuperMonkeyBallDX:
-                case GxGame.FZeroAX:
+                case AvGame.SuperMonkeyBall:
+                case AvGame.SuperMonkeyBallDX:
+                case AvGame.FZeroAX:
                     {
                         // These games count the 8 bytes of header in the compressed size field
                         headerSizeField += 8;
                     }
                     break;
 
-                case GxGame.FZeroGX:
+                case AvGame.FZeroGX:
                     {
                         // These games store the compressed size exactly
                     }
