@@ -24,13 +24,12 @@ namespace GameCube.AmusementVision.ARC
         private Pointer dataPointer;
         private UInt128 spacer32C;
         private FileSystem fileSystem = new FileSystem();
-        private FileSystemFile[] files = Array.Empty<FileSystemFile>();
 
         // PROPERTIES
         public string FileExtension => Extension;
         public string FileName { get; set; } = string.Empty;
-        public FileSystemFile[] Files { get => files; set => files = value; }
         public Endianness Endianness => endianness;
+        public FileSystem FileSystem => fileSystem;
 
         public void Deserialize(EndianBinaryReader reader)
         {
@@ -43,13 +42,10 @@ namespace GameCube.AmusementVision.ARC
             Assert.IsTrue(spacer32C == Spacer32C, $"Spacer value {spacer32C:x32} does not match expected value {Spacer32C:x32}!");
             reader.Read(ref fileSystem);
             reader.AlignTo(Alignment);
-            files = FileSystemFile.ReadFiles(reader, fileSystem);
         }
 
         public void Serialize(EndianBinaryWriter writer)
         {
-            PrepareFileSystemEntries();
-
             // Write structure
             writer.Write(Magic);
             var ptrsAddress = writer.GetPositionAsPointer();
@@ -63,7 +59,9 @@ namespace GameCube.AmusementVision.ARC
             fileSystemSize = fileSystemSize = fileSystem.AddressRange.Size;
             writer.AlignTo(Alignment);
             dataPointer = writer.GetPositionAsPointer();
-            fileSystem.FilesEntries = FileSystemFileEntry.WriteFiles(writer, files);
+
+            throw new NotImplementedException();
+            //fileSystem.FilesEntries = FileSystemFileEntry.WriteFiles(writer, files);
 
             // Write Pointers properly
             writer.JumpToAddress(ptrsAddress);
@@ -73,22 +71,6 @@ namespace GameCube.AmusementVision.ARC
             // Write file system properly (pointers and sizes)
             writer.JumpToAddress(fileSystem.AddressRange.startAddress);
             writer.Write(fileSystem); //TODO: just entries, not names...?
-        }
-
-        public void PrepareFileSystemEntries()
-        {
-            // Prepare FileSystem. Data will be filled later.
-            //fileSystem.FilesEntries = FileSystemFileEntry.GetTempFileEntries(files);
-            // TODO: this is incorrect!
-            // NOT ORDERED & DOES NOT INLCLUDE FOLDERS
-            // THUS SIZE IS OFF, POINTERS AND OTHER DATA OFF
-            // Looks like you need to build proper entries NOW, no patching FS afterwards other than ptr+size
-            // ALSO, YOU NEED TO DEFINE ROOT PATH (TRIM FILE PATHS), ALSO FILE PATCH MUST INCLUDE ROOT PATH
-        }
-
-        public void AddPaths(string rootPath, params string[] paths)
-        {
-            files = FileSystemFile.GetFiles(rootPath, paths);
         }
     }
 }

@@ -7,6 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="GameCube.AmusementVision.ARC.asmdef" />
+	  <None Remove="GameCube.AmusementVision.ARC.asmdef.meta" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\GameCube.AmusementVision\GameCube.AmusementVision.csproj" />
 		<ProjectReference Include="..\..\..\GameCube.Core\src\GameCube.DiskImage\GameCube.DiskImage.csproj" />
 		<ProjectReference Include="..\..\..\Manifold.Core\src\Manifold.IO\Manifold.IO.csproj" />
