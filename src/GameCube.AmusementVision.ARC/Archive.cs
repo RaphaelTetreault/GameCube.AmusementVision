@@ -10,7 +10,7 @@ namespace GameCube.AmusementVision.ARC
         IBinarySerializable
     {
         // CONSTANTS
-        private const int Alignment = 32;
+        private const int FileAlignment = 32;
         private const ulong _16C = 0xCCCCCCCC_CCCCCCCC;
         private readonly UInt128 Spacer32C = new UInt128(_16C, _16C);
         public const uint Magic = 0x55AA382D; // "Uª8-"
@@ -41,11 +41,13 @@ namespace GameCube.AmusementVision.ARC
             reader.Read(ref spacer32C);
             Assert.IsTrue(spacer32C == Spacer32C, $"Spacer value {spacer32C:x32} does not match expected value {Spacer32C:x32}!");
             reader.Read(ref fileSystem);
-            reader.AlignTo(Alignment);
+            reader.AlignTo(FileAlignment);
         }
 
         public void Serialize(EndianBinaryWriter writer)
         {
+            fileSystem.FileAlignment = FileAlignment;
+
             // Write structure
             writer.Write(Magic);
             var ptrsAddress = writer.GetPositionAsPointer();
@@ -55,22 +57,18 @@ namespace GameCube.AmusementVision.ARC
             writer.Write(_16C);
             writer.Write(_16C);
             writer.Write(fileSystem);
+
+            // Assign pointer, will write later
             fileSystemPtr = fileSystem.AddressRange.startAddress;
             fileSystemSize = fileSystemSize = fileSystem.AddressRange.Size;
-            writer.AlignTo(Alignment);
+            writer.AlignTo(FileAlignment); // Realign with file alignment
             dataPointer = writer.GetPositionAsPointer();
 
-            throw new NotImplementedException();
-            //fileSystem.FilesEntries = FileSystemFileEntry.WriteFiles(writer, files);
-
-            // Write Pointers properly
+            // Write proper pointers
             writer.JumpToAddress(ptrsAddress);
             writer.Write(fileSystemPtr);
             writer.Write(fileSystemSize);
             writer.Write(dataPointer);
-            // Write file system properly (pointers and sizes)
-            writer.JumpToAddress(fileSystem.AddressRange.startAddress);
-            writer.Write(fileSystem); //TODO: just entries, not names...?
         }
     }
 }
