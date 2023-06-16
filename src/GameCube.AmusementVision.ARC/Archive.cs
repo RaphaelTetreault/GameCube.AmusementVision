@@ -11,8 +11,8 @@ namespace GameCube.AmusementVision.ARC
     {
         // CONSTANTS
         private const int FileAlignment = 32;
-        private const ulong _16C = 0xCCCCCCCC_CCCCCCCC;
-        private readonly UInt128 Spacer32C = new UInt128(_16C, _16C);
+        private const byte PaddingCC = 0xCC;
+        private const byte PaddingSize = 16;
         public const uint Magic = 0x55AA382D; // "Uª8-"
         public const Endianness endianness = Endianness.BigEndian;
         public const string Extension = ".arc";
@@ -22,7 +22,6 @@ namespace GameCube.AmusementVision.ARC
         private Pointer fileSystemPtr;
         private int fileSystemSize;
         private Pointer dataPointer;
-        private UInt128 spacer32C;
         private FileSystem fileSystem = new FileSystem();
 
         // PROPERTIES
@@ -38,8 +37,8 @@ namespace GameCube.AmusementVision.ARC
             reader.Read(ref fileSystemPtr);
             reader.Read(ref fileSystemSize);
             reader.Read(ref dataPointer);
-            reader.Read(ref spacer32C);
-            Assert.IsTrue(spacer32C == Spacer32C, $"Spacer value {spacer32C:x32} does not match expected value {Spacer32C:x32}!");
+            bool isCorrectPadding = reader.ReadPadding(PaddingCC, PaddingSize);
+            Assert.IsTrue(isCorrectPadding, $"Spacer value does not match expected value {PaddingCC:x2}!");
             reader.Read(ref fileSystem);
         }
 
@@ -54,8 +53,7 @@ namespace GameCube.AmusementVision.ARC
             writer.Write(fileSystemPtr);
             writer.Write(fileSystemSize);
             writer.Write(dataPointer);
-            writer.Write(_16C);
-            writer.Write(_16C);
+            writer.WritePadding(PaddingCC, PaddingSize);
             writer.Write(fileSystem);
 
             // Assign pointer, will write later
