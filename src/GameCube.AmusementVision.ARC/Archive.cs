@@ -41,11 +41,11 @@ namespace GameCube.AmusementVision.ARC
             reader.Read(ref spacer32C);
             Assert.IsTrue(spacer32C == Spacer32C, $"Spacer value {spacer32C:x32} does not match expected value {Spacer32C:x32}!");
             reader.Read(ref fileSystem);
-            reader.AlignTo(FileAlignment);
         }
 
         public void Serialize(EndianBinaryWriter writer)
         {
+            // Enforce file alignment in file system
             fileSystem.FileAlignment = FileAlignment;
 
             // Write structure
