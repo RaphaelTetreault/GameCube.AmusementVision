@@ -1,6 +1,5 @@
 ﻿using GameCube.DiskImage;
 using Manifold.IO;
-using System;
 
 namespace GameCube.AmusementVision.ARC
 {
