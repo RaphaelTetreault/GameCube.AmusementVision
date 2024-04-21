@@ -58,7 +58,7 @@ namespace GameCube.AmusementVision.ARC
 
             // Assign pointer, will write later
             fileSystemPtr = fileSystem.AddressRange.startAddress;
-            fileSystemSize = fileSystemSize = fileSystem.AddressRange.Size;
+            fileSystemSize = fileSystem.AddressRange.Size;
             writer.AlignTo(FileAlignment); // Realign with file alignment
             dataPointer = writer.GetPositionAsPointer();
 
