@@ -3,6 +3,13 @@ using Manifold.IO;
 
 namespace GameCube.AmusementVision.ARC
 {
+    /// <summary>
+    ///     A file archive. It is a simple binary which stores a small file system.
+    /// </summary>
+    /// <remarks>
+    ///     This format may be the same as the one used in GC SDK.
+    ///     If it is, move the namespace to GameCube.ARC.
+    /// </remarks>
     public class Archive :
         IFileType,
         IBinaryFileType,
