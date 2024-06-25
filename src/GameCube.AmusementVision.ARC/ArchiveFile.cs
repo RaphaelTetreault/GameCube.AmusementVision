@@ -15,5 +15,4 @@ public class ArchiveFile : BinaryFileWrapper<Archive>
     public override Endianness Endianness => endianness;
     public override string FileExtension => FileExtension;
     public override string FileName { get; set; } = string.Empty;
-    public override string Version => "1";
 }
