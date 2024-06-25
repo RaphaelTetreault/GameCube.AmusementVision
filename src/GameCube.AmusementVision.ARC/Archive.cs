@@ -11,8 +11,6 @@ namespace GameCube.AmusementVision.ARC
     ///     If it is, move the namespace to GameCube.ARC.
     /// </remarks>
     public class Archive :
-        IFileType,
-        IBinaryFileType,
         IBinarySerializable
     {
         // CONSTANTS
@@ -20,8 +18,6 @@ namespace GameCube.AmusementVision.ARC
         private const byte PaddingCC = 0xCC;
         private const byte PaddingSize = 16;
         public const uint Magic = 0x55AA382D; // "Uª8-"
-        public const Endianness endianness = Endianness.BigEndian;
-        public const string Extension = ".arc";
 
         // MEMBERS
         private uint magic;
@@ -31,9 +27,6 @@ namespace GameCube.AmusementVision.ARC
         private FileSystem fileSystem = new FileSystem();
 
         // PROPERTIES
-        public string FileExtension => Extension;
-        public string FileName { get; set; } = string.Empty;
-        public Endianness Endianness => endianness;
         public FileSystem FileSystem => fileSystem;
 
         public void Deserialize(EndianBinaryReader reader)
