@@ -12,7 +12,11 @@ public class ArchiveFile : BinaryFileWrapper<Archive>
     public const string fileExtension = ".arc";
 
     // PROPERTIES
-    public override Endianness Endianness => endianness;
-    public override string FileExtension => FileExtension;
+    public override Endianness Endianness { get; set; } = endianness;
+    public override string FileExtension { get; set; } = fileExtension;
     public override string FileName { get; set; } = string.Empty;
+
+    // CONSTRUCTORS
+    public ArchiveFile() : base() { }
+    public ArchiveFile(string inputPath) : base(inputPath) { }
 }
