@@ -21,10 +21,5 @@ namespace GameCube.AmusementVision.LZ
             : base(message, innerException)
         {
         }
-
-        public InvalidLzFileException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

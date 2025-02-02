@@ -4,16 +4,16 @@ namespace GameCube.AmusementVision.LZ
 {
 	internal class LzssEncoder
 	{
-		// Ring buffer of size N, with extra F-1 bytes to facilitate comparison
-		byte[] ringBuf = new byte[LzssParameters.N + LzssParameters.F - 1];
+        // Ring buffer of size N, with extra F-1 bytes to facilitate comparison
+        private readonly byte[] ringBuf = new byte[LzssParameters.N + LzssParameters.F - 1];
 
 		// Match position and length of the longest match. Set by InsertNode().
 		int matchPosition, matchLength;
 
-		// Binary search trees.
-		int[] left = new int[LzssParameters.N + 1];
-		int[] right = new int[LzssParameters.N + 257];
-		int[] parent = new int[LzssParameters.N + 1];
+        // Binary search trees.
+        private readonly int[] left = new int[LzssParameters.N + 1];
+        private readonly int[] right = new int[LzssParameters.N + 257];
+        private readonly int[] parent = new int[LzssParameters.N + 1];
 
 		/// Initialize binary trees.
 		void InitTree()
@@ -106,7 +106,7 @@ namespace GameCube.AmusementVision.LZ
 
 		public byte[] Encode(byte[] input)
 		{
-			List<byte> app = new List<byte>();
+			List<byte> app = [];
 			int inputPos = 0;
 
 			int len, r, s, last_matchLength, i;
@@ -137,7 +137,7 @@ namespace GameCube.AmusementVision.LZ
 				ringBuf[r + len] = input[inputPos++];
 
 			if (len == 0) // Text of size zero
-				return null;
+				return [];
 
 			/* Insert the F strings,
 	           each of which begins with one or more 'space' characters.
@@ -219,7 +219,7 @@ namespace GameCube.AmusementVision.LZ
 				}
 			}
 
-			return app.ToArray();
+			return [.. app];
 		}
 	}
 }

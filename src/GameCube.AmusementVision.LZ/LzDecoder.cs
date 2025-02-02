@@ -4,9 +4,9 @@ namespace GameCube.AmusementVision.LZ
 {
     internal class LzssDecoder
     {
-        public byte[] Decode(byte[] input)
+        public static byte[] Decode(byte[] input)
         {
-            List<byte> output = new List<byte>();
+            List<byte> output = [];
             byte[] ringBuf = new byte[LzssParameters.N];
             int inputPos = 0, ringBufPos = LzssParameters.N - LzssParameters.F;
 
@@ -49,7 +49,7 @@ namespace GameCube.AmusementVision.LZ
                 flags >>= 1;
             }
 
-            return output.ToArray();
+            return [.. output];
         }
     }
 }

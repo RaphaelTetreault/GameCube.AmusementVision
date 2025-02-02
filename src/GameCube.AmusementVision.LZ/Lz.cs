@@ -8,12 +8,10 @@ namespace GameCube.AmusementVision.LZ
     {
         public static void Unpack(Stream inputStream, Stream outputStream)
         {
-            if (inputStream == null)
-                throw new ArgumentNullException("inputStream");
-            if (outputStream == null)
-                throw new ArgumentNullException("outputStream");
+            ArgumentNullException.ThrowIfNull(inputStream);
+            ArgumentNullException.ThrowIfNull(outputStream);
 
-            EndianBinaryReader reader = new EndianBinaryReader(inputStream, Endianness.LittleEndian);
+            EndianBinaryReader reader = new(inputStream, Endianness.LittleEndian);
 
             // Read file header
             int headerSizeField = reader.ReadInt32();
@@ -48,8 +46,7 @@ namespace GameCube.AmusementVision.LZ
             // Read and uncompress LZSS data
             byte[] compressedData = reader.ReadBytes(compressedSize);
 
-            LzssDecoder decoder = new LzssDecoder();
-            byte[] uncompressedData = decoder.Decode(compressedData);
+            byte[] uncompressedData = LzssDecoder.Decode(compressedData);
             if (uncompressedData.Length != uncompressedSize)
             {
                 throw new InvalidLzFileException("Invalid .lz file, outputSize does not match actual output size.");
@@ -61,17 +58,15 @@ namespace GameCube.AmusementVision.LZ
 
         public static void Pack(Stream inputStream, Stream outputStream, AvGame game)
         {
-            if (inputStream == null)
-                throw new ArgumentNullException("inputStream");
-            if (outputStream == null)
-                throw new ArgumentNullException("outputStream");
-            if (!Enum.IsDefined(typeof(AvGame), game))
-                throw new ArgumentOutOfRangeException("game");
+            ArgumentNullException.ThrowIfNull(inputStream);
+            ArgumentNullException.ThrowIfNull(outputStream);
+            if (!Enum.IsDefined(game))
+                throw new ArgumentOutOfRangeException(nameof(game));
 
             // Read the input data and compress with LZSS
             byte[] uncompressedData = GetAllBytes(inputStream);
 
-            LzssEncoder encoder = new LzssEncoder();
+            LzssEncoder encoder = new();
             byte[] compressedData = encoder.Encode(uncompressedData);
 
             // Write file header and data
@@ -97,7 +92,7 @@ namespace GameCube.AmusementVision.LZ
                     throw new NotImplementedException($"Packing for game '{game}' is not implemented!");
             }
 
-            EndianBinaryWriter outputBinaryWriter = new EndianBinaryWriter(outputStream, Endianness.LittleEndian);
+            EndianBinaryWriter outputBinaryWriter = new(outputStream, Endianness.LittleEndian);
             outputBinaryWriter.Write(headerSizeField);
             outputBinaryWriter.Write(uncompressedData.Length);
             outputBinaryWriter.Write(compressedData);
@@ -105,12 +100,10 @@ namespace GameCube.AmusementVision.LZ
 
         private static byte[] GetAllBytes(Stream stream)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
         }
 
     }
