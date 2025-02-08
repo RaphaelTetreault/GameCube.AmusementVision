@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
-namespace GameCube.AmusementVision.LZ
+namespace GameCube.AmusementVision.LZ;
+
+/// <summary>
+///     Thrown when an invalid Arc file is read/written.
+/// </summary>
+public class InvalidLzFileException : Exception
 {
-    /// <summary>
-    /// Thrown when an invalid Arc file is read/written.
-    /// </summary>
-    public class InvalidLzFileException : Exception
+    public InvalidLzFileException()
     {
-        public InvalidLzFileException()
-        {
-        }
+    }
 
-        public InvalidLzFileException(string message)
-            : base(message)
-        {
-        }
+    public InvalidLzFileException(string message)
+        : base(message)
+    {
+    }
 
-        public InvalidLzFileException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public InvalidLzFileException(string message, Exception innerException)
+        : base(message, innerException)
+    {
     }
 }
