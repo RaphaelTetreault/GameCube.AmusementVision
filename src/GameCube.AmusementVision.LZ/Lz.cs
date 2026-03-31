@@ -75,13 +75,13 @@ public static class Lz
     }
 
     public static LzHeaderType GfzGameCodeToLzHeaderType(GameCode gameCode)
-        => GfzGameCodeFieldsToLzHeaderType((GameCodeFields)gameCode);
+        => GfzGameCodeFieldsToLzHeaderType((GameCodeFlags)gameCode);
 
-    public static LzHeaderType GfzGameCodeFieldsToLzHeaderType(GameCodeFields gameCodeFields)
+    public static LzHeaderType GfzGameCodeFieldsToLzHeaderType(GameCodeFlags gameCodeFields)
     {
-        if (gameCodeFields.HasFlag(GameCodeFields.GX))
+        if (gameCodeFields.HasFlag(GameCodeFlags.GX))
             return LzHeaderType.FileSize;
-        else if (gameCodeFields.HasFlag(GameCodeFields.AX))
+        else if (gameCodeFields.HasFlag(GameCodeFlags.AX))
             return LzHeaderType.FileSizePlus8;
         else
             throw new NotImplementedException($"Unhandled case {gameCodeFields}.");
