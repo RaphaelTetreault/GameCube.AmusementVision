@@ -1,4 +1,5 @@
-﻿using Manifold.IO;
+﻿using GameCube.GFZ;
+using Manifold.IO;
 using System;
 using System.IO;
 
@@ -59,12 +60,45 @@ public static class Lz
         outputStream.Write(uncompressedData, 0, uncompressedData.Length);
     }
 
-    public static void Pack(Stream inputStream, Stream outputStream, AvGame game)
+    public static LzHeaderType AvGameToLzHeaderType(AvGame avGame)
+    {
+        return avGame switch
+        {
+            AvGame.FZeroAX or
+            AvGame.SuperMonkeyBall or
+            AvGame.SuperMonkeyBallDX => LzHeaderType.FileSizePlus8,
+
+            AvGame.FZeroGX => LzHeaderType.FileSize,
+
+            _ => throw new NotImplementedException($"Unhandled case {avGame}."),
+        };
+    }
+
+    public static LzHeaderType GfzGameCodeToLzHeaderType(GameCode gameCode)
+        => GfzGameCodeFieldsToLzHeaderType((GameCodeFields)gameCode);
+
+    public static LzHeaderType GfzGameCodeFieldsToLzHeaderType(GameCodeFields gameCodeFields)
+    {
+        if (gameCodeFields.HasFlag(GameCodeFields.GX))
+            return LzHeaderType.FileSize;
+        else if (gameCodeFields.HasFlag(GameCodeFields.AX))
+            return LzHeaderType.FileSizePlus8;
+        else
+            throw new NotImplementedException($"Unhandled case {gameCodeFields}.");
+    }
+
+    //public static void Pack(Stream inputStream, Stream outputStream, AvGame gameTitle)
+    //    => Pack(inputStream, outputStream, AvGameToLzHeaderType(gameTitle));
+
+    public static void Pack(Stream inputStream, Stream outputStream, GameCode gameCode)
+        => Pack(inputStream, outputStream, GfzGameCodeToLzHeaderType(gameCode));
+
+    public static void Pack(Stream inputStream, Stream outputStream, LzHeaderType headerType)
     {
         ArgumentNullException.ThrowIfNull(inputStream);
         ArgumentNullException.ThrowIfNull(outputStream);
-        if (!Enum.IsDefined(game))
-            throw new ArgumentOutOfRangeException(nameof(game));
+        if (headerType == LzHeaderType.Undefined)
+            throw new ArgumentException($"Undefined {nameof(LzHeaderType)}.");
 
         // Read the input data and compress with LZSS
         byte[] uncompressedData = GetAllBytes(inputStream);
@@ -74,26 +108,8 @@ public static class Lz
 
         // Write file header and data
         int headerSizeField = compressedData.Length;
-        switch (game)
-        {
-            case AvGame.SuperMonkeyBall:
-            case AvGame.SuperMonkeyBallDX:
-            case AvGame.FZeroAX:
-                {
-                    // These games count the 8 bytes of header in the compressed size field
-                    headerSizeField += 8;
-                }
-                break;
-
-            case AvGame.FZeroGX:
-                {
-                    // These games store the compressed size exactly
-                }
-                break;
-
-            default:
-                throw new NotImplementedException($"Packing for game '{game}' is not implemented!");
-        }
+        if (headerType == LzHeaderType.FileSizePlus8)
+            headerSizeField += 8;
 
         EndianBinaryWriter outputBinaryWriter = new(outputStream, Endianness.LittleEndian);
         outputBinaryWriter.Write(headerSizeField);

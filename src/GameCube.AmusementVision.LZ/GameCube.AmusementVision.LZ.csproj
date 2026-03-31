@@ -9,6 +9,7 @@
     <None Remove="GameCube.Cheats.asmdef.meta" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\GameCube.GFZ\src\GameCube.GFZ\GameCube.GFZ.csproj" />
     <ProjectReference Include="..\..\..\Manifold.Core\src\Manifold.IO\Manifold.IO.csproj" />
     <ProjectReference Include="..\GameCube.AmusementVision\GameCube.AmusementVision.csproj" />
   </ItemGroup>
