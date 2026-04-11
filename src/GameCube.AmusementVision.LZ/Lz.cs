@@ -87,9 +87,6 @@ public static class Lz
             throw new NotImplementedException($"Unhandled case {gameCodeFields}.");
     }
 
-    //public static void Pack(Stream inputStream, Stream outputStream, AvGame gameTitle)
-    //    => Pack(inputStream, outputStream, AvGameToLzHeaderType(gameTitle));
-
     public static void Pack(Stream inputStream, Stream outputStream, GameCode gameCode)
         => Pack(inputStream, outputStream, GfzGameCodeToLzHeaderType(gameCode));
 
@@ -125,4 +122,41 @@ public static class Lz
         return memoryStream.ToArray();
     }
 
+    /// <summary>
+    ///     Compresses file at <paramref name="filePath"/> using Amusement Vision LZ compression.
+    /// </summary>
+    /// <param name="filePath">The file to compress.</param>
+    /// <param name="lzHeaderType">Which LZ format to use for this game.</param>
+    /// <returns>
+    ///     A memory stream with the compressed file contents.
+    /// </returns>
+    public static MemoryStream Compress(string filePath, LzHeaderType lzHeaderType)
+    {
+        var compressedFile = new MemoryStream();
+        using (var inputFile = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            Pack(inputFile, compressedFile, lzHeaderType);
+            compressedFile.Flush();
+        }
+        return compressedFile;
+    }
+
+    /// <summary>
+    ///     Decompresses file at <paramref name="filePath"/> using Amusement Vision LZ decompression.
+    /// </summary>
+    /// <param name="filePath">The file to decompress.</param>
+    /// <returns>
+    ///     A memory stream with the decompressed file contents.
+    /// </returns>
+    public static MemoryStream Decompress(string filePath)
+    {
+        var decompressedFile = new MemoryStream();
+        using (var inputFile = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+        {
+            Unpack(inputFile, decompressedFile);
+            decompressedFile.Flush();
+            decompressedFile.Position = 0;
+        }
+        return decompressedFile;
+    }
 }
