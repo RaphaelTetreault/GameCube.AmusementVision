@@ -3,9 +3,9 @@
 namespace GameCube.AmusementVision.LZ;
 
 /// <summary>
-///     Thrown when an invalid Arc file is read/written.
+///     Thrown when an invalid LZ file is read/written.
 /// </summary>
-public class InvalidLzFileException : Exception
+public sealed class InvalidLzFileException : Exception
 {
     public InvalidLzFileException()
     {

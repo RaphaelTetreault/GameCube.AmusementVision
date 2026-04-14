@@ -66,7 +66,7 @@ public static class Lz
         {
             AvGame.FZeroAX or
             AvGame.SuperMonkeyBall or
-            AvGame.SuperMonkeyBallDX => LzHeaderType.FileSizePlus8,
+            AvGame.SuperMonkeyBallDX => LzHeaderType.FileSizePlusHeader,
 
             AvGame.FZeroGX => LzHeaderType.FileSize,
 
@@ -82,7 +82,7 @@ public static class Lz
         if (gameCodeFields.HasFlag(GameCodeFlags.GX))
             return LzHeaderType.FileSize;
         else if (gameCodeFields.HasFlag(GameCodeFlags.AX))
-            return LzHeaderType.FileSizePlus8;
+            return LzHeaderType.FileSizePlusHeader;
         else
             throw new NotImplementedException($"Unhandled case {gameCodeFields}.");
     }
@@ -105,7 +105,7 @@ public static class Lz
 
         // Write file header and data
         int headerSizeField = compressedData.Length;
-        if (headerType == LzHeaderType.FileSizePlus8)
+        if (headerType == LzHeaderType.FileSizePlusHeader)
             headerSizeField += 8;
 
         EndianBinaryWriter outputBinaryWriter = new(outputStream, Endianness.LittleEndian);
@@ -130,7 +130,7 @@ public static class Lz
     /// <returns>
     ///     A memory stream with the compressed file contents.
     /// </returns>
-    public static MemoryStream Compress(string filePath, LzHeaderType lzHeaderType)
+    public static MemoryStream CompressMemoryStream(string filePath, LzHeaderType lzHeaderType)
     {
         var compressedFile = new MemoryStream();
         using (var inputFile = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -148,7 +148,7 @@ public static class Lz
     /// <returns>
     ///     A memory stream with the decompressed file contents.
     /// </returns>
-    public static MemoryStream Decompress(string filePath)
+    public static MemoryStream DecompressMemoryStream(string filePath)
     {
         var decompressedFile = new MemoryStream();
         using (var inputFile = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -158,5 +158,50 @@ public static class Lz
             decompressedFile.Position = 0;
         }
         return decompressedFile;
+    }
+
+    /// <summary>
+    ///     
+    /// </summary>
+    /// <param name="inputFile"></param>
+    /// <param name="outputFile"></param>
+    /// <param name="overwriteFile"></param>
+    /// <exception cref="LzIOException"></exception>
+    public static void DecompressFile(string inputFile, string outputFile, bool overwriteFile)
+    {
+        // Don't overwrite file unless we specify we want to.
+        if (!overwriteFile && File.Exists(outputFile))
+        {
+            string msg = $"Cannot overwrite existing file {outputFile}.";
+            throw new LzIOException(msg);
+        }
+
+        // Write file. First read into memory, then write decompressed output.
+        using var stream = DecompressMemoryStream(inputFile);
+        using var writer = File.Create(outputFile);
+        writer.Write(stream.ToArray());
+    }
+
+    /// <summary>
+    ///     
+    /// </summary>
+    /// <param name="inputFile"></param>
+    /// <param name="outputFile"></param>
+    /// <param name="lzHeaderType"></param>
+    /// <param name="overwriteFile"></param>
+    /// <exception cref="LzIOException"></exception>
+    public static void CompressFile(string inputFile, string outputFile, LzHeaderType lzHeaderType, bool overwriteFile)
+    {
+        // Don't overwrite file unless we specify we want to.
+        if (!overwriteFile && File.Exists(outputFile))
+        {
+            string msg = $"Cannot overwrite existing file {outputFile}.";
+            throw new LzIOException(msg);
+        }
+
+        // Write file. First read into memory, then write compressed output.
+        using var stream = CompressMemoryStream(inputFile, lzHeaderType);
+        using var writer = File.Create(outputFile);
+        writer.Write(stream.ToArray());
     }
 }

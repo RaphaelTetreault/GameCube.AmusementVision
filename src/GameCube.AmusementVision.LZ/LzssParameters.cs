@@ -1,23 +1,33 @@
 ﻿namespace GameCube.AmusementVision.LZ;
 
 /// <summary>
-///     Parameters for Amusemen Vision's LZSS library.
+///     Parameters for Amusement Vision's LZSS library.
 /// </summary>
 internal static class LzssParameters
 {
-    /// <summary>Size of the ring buffer.</summary>
+    /// <summary>
+    ///     Size of the ring buffer.
+    /// </summary>
     public const int N = 4096;
 
-    /// <summary>Maximum match length for position coding. (0x0F + THRESHOLD).</summary>
+    /// <summary>
+    ///     Maximum match length for position coding. (0x0F + THRESHOLD).
+    /// </summary>
     public const int F = 18;
 
-    /// <summary>Minimum match length for position coding.</summary>
+    /// <summary>
+    ///     Minimum match length for position coding.
+    /// </summary>
     public const int THRESHOLD = 3;
 
-    /// <summary>Index for root of binary search trees.</summary>
+    /// <summary>
+    ///     Index for root of binary search trees.
+    /// </summary>
     public const int NIL = N;
 
-    /// <summary>Character used to fill the ring buffer initially.</summary>
-    //private const ubyte BUFF_INIT = ' ';
+    /// <summary>
+    ///     Character used to fill the ring buffer initially.
+    /// </summary>
     public const byte BUFF_INIT = 0; // Changed for F-Zero GX
+    //private const ubyte BUFF_INIT = ' ';
 }

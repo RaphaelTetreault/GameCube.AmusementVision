@@ -23,5 +23,5 @@ public enum LzHeaderType
     ///   <see cref="AvGame.SuperMonkeyBallDX"/>, and
     ///   <see cref="AvGame.FZeroAX"/>.
     /// </summary>
-    FileSizePlus8,
+    FileSizePlusHeader,
 }
