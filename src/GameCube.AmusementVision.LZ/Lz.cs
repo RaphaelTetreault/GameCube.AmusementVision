@@ -178,8 +178,12 @@ public static class Lz
 
         // Write file. First read into memory, then write decompressed output.
         using var stream = DecompressMemoryStream(inputFile);
+        byte[] data = stream.ToArray();
+        stream.Close();
+
         using var writer = File.Create(outputFile);
-        writer.Write(stream.ToArray());
+        writer.Write(data);
+        writer.Close();
     }
 
     /// <summary>
